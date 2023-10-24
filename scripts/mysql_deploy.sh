@@ -1,11 +1,12 @@
-source configs/mysql.conf
+source configs/mysql.env
 
 CUR_PATH=$(pwd)
 ENV=$1
-# mysql 外部端口，镜像名和容器名
+
 if [[ $ENV =~ dev ]]; then MYSQL_PORT=$DEV_HOST_PORT;
 elif [[ $ENV =~ prod ]]; then MYSQL_PORT=$PORT_HOST_PORT; fi
 
+# mysql 外部端口，镜像名和容器名
 MYSQL_CONTAINER_NAME=$CONTAINER_NAME-$ENV
 MYSQL_IMAGE_NAME=$CONTAINER_NAME:$ENV
 MYSQL_LOCAL_PATH=$VOLUME_PATH/$ENV
