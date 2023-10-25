@@ -1,0 +1,3 @@
+[submodule "nacos-docker"]
+path = nacos-docker
+url = https://github.com/PeiLeizzz/nacos-docker
