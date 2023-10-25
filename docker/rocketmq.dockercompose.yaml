@@ -1,0 +1,51 @@
+version: '3.6'
+services:
+  rmqnamesrv:
+    image: apache/rocketmq:${ROCKETMQ_VERSION}
+    container_name: niuktok-rocketmq-namesrv
+    ports:
+      - ${NAMESVR_LOCAL_PORT}:9876
+    restart: always
+    privileged: true
+    volumes:
+      - ${VOLUME_PATH}/nameserver/logs:/home/rocketmq/logs
+      - ${VOLUME_PATH}/nameserver/bin/runserver.sh:/home/rocketmq/rocketmq-${ROCKETMQ_VERSION}/bin/runserver.sh
+    environment:
+      - MAX_HEAP_SIZE=256M
+      - HEAP_NEWSIZE=128M
+    command: ["sh", "mqnamesrv"]
+  rmqbroker:
+    image: apache/rocketmq:${ROCKETMQ_VERSION}
+    container_name: niuktok-rocketmq-broker
+    ports:
+      - ${BROKER_LOCAL_PORT_1}:10909
+      - ${BROKER_LOCAL_PORT_2}:10911
+    restart: always
+    privileged: true
+    volumes:
+      - ${VOLUME_PATH}/broker/logs:/home/rocketmq/logs
+      - ${VOLUME_PATH}/broker/store:/home/rocketmq/logs
+      - ${VOLUME_PATH}/broker/conf/broker.conf:/home/rocketmq/broker.conf
+      - ${VOLUME_PATH}/broker/bin/runbroker.sh:/home/rocketmq/rocketmq-${ROCKETMQ_VERSION}/bin/runbroker.sh
+    depends_on:
+      - 'rmqnamesrv'
+    environment:
+      - NAMESRV_ADDR=namesrv:${NAMESVR_LOCAL_PORT}
+      - MAX_HEAP_SIZE=512M
+      - HEAP_NEWSIZE=256M
+    command: ["sh", "mqbroker", "-c", "/home/rocketmq/broker.conf"]
+    links:
+      - rmqnamesrv:namesrv
+  rmqdashboard:
+    image: apacherocketmq/rocketmq-dashboard:latest
+    container_name: niuktok-rocketmq-dashboard
+    ports:
+      - ${DASHBOARD_LOCAL_PORT}:8080
+    restart: always
+    privileged: true
+    depends_on:
+      - 'rmqnamesrv'
+    environment:
+      - JAVA_OPTS= -Xmx256M -Xms256M -Xmn128M -Drocketmq.namesrv.addr=namesrv:${NAMESVR_LOCAL_PORT} -Dcom.rocketmq.sendMessageWithVIPChannel=false
+    links:
+      - rmqnamesrv:namesrv
