@@ -24,7 +24,7 @@ services:
     privileged: true
     volumes:
       - ${VOLUME_PATH}/broker/logs:/home/rocketmq/logs
-      - ${VOLUME_PATH}/broker/store:/home/rocketmq/logs
+      - ${VOLUME_PATH}/broker/store:/home/rocketmq/store
       - ${VOLUME_PATH}/broker/conf/broker.conf:/home/rocketmq/broker.conf
       - ${VOLUME_PATH}/broker/bin/runbroker.sh:/home/rocketmq/rocketmq-${ROCKETMQ_VERSION}/bin/runbroker.sh
     depends_on:
