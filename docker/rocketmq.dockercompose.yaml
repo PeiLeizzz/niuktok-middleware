@@ -19,7 +19,7 @@ services:
     container_name: niuktok-rocketmq-broker
     ports:
       - ${BROKER_LOCAL_PORT_1}:10909
-      - ${BROKER_LOCAL_PORT_2}:10911
+      - ${BROKER_LOCAL_PORT_2}:${BROKER_LOCAL_PORT_2}
     restart: always
     privileged: true
     volumes:
@@ -30,7 +30,7 @@ services:
     depends_on:
       - 'rmqnamesrv'
     environment:
-      - NAMESRV_ADDR=namesrv:${NAMESVR_LOCAL_PORT}
+      - NAMESRV_ADDR=namesrv:9876
       - MAX_HEAP_SIZE=512M
       - HEAP_NEWSIZE=256M
     command: ["sh", "mqbroker", "-c", "/home/rocketmq/broker.conf"]
@@ -46,6 +46,6 @@ services:
     depends_on:
       - 'rmqnamesrv'
     environment:
-      - JAVA_OPTS= -Xmx256M -Xms256M -Xmn128M -Drocketmq.namesrv.addr=namesrv:${NAMESVR_LOCAL_PORT} -Dcom.rocketmq.sendMessageWithVIPChannel=false
+      - JAVA_OPTS= -Xmx256M -Xms256M -Xmn128M -Drocketmq.namesrv.addr=namesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
     links:
       - rmqnamesrv:namesrv
