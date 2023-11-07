@@ -25,7 +25,7 @@ cd $REDIS_LOCAL_PATH
 sudo chmod -R 777 .
 sudo chmod -R 755 ./conf
 
-docker run --restart=always \
+sudo docker run --restart=always \
 -p $REDIS_PORT:6379 \
 --name $REDIS_CONTAINER_NAME \
 -v $REDIS_LOCAL_PATH/conf/redis.conf:/etc/redis/redis.conf \
